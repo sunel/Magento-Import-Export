@@ -2,6 +2,8 @@
 
 Move the files to shell directory of your magento installation.
 
+In the export_attribute_set.php file
+
 ```php
 	$attributeSetNames = array(
 		'Default'
