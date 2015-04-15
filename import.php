@@ -29,6 +29,60 @@
 	// Initialize the admin application
 	Mage::app('admin');
 	
+	$writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
+	/*
+    |--------------------------------------------------------------------------
+    | Attribute set Delete
+    |--------------------------------------------------------------------------
+    */
+    
+	/*
+	$resource = Mage::getSingleton('core/resource');
+	$db_read = $resource->getConnection('core_read');
+	 
+	$attribute_sets = $db_read->fetchCol("SELECT attribute_set_id FROM " . $resource->getTableName("eav_attribute_set") . " WHERE attribute_set_id<> 4 AND entity_type_id=4");
+	foreach ($attribute_sets as $attribute_set_id) {
+	    try {
+	        Mage::getModel("eav/entity_attribute_set")->load($attribute_set_id)->delete();
+	    } catch (Exception $e) {
+	        echo $e->getMessage() . "\n";
+	    }
+	}
+	*/
+	
+	/*
+    |--------------------------------------------------------------------------
+    | Attribute Delete
+    |--------------------------------------------------------------------------
+    */
+    
+	/*
+	$fileName = MAGENTO . '/var/oldAttrib.csv';
+	$file = fopen($fileName,"r");
+	$oldCode = array();
+    while(!feof($file)){
+    	$tmpCode = fgetcsv($file, 0, ',');
+		if(is_array($tmpCode)){
+			$oldCode[] = $tmpCode[0];	
+		}  
+    }
+	fclose($file);
+	
+	$attrCollection = Mage::getResourceModel('catalog/product_attribute_collection')
+								->addFilter('is_user_defined','1')
+								->addFieldToFilter('main_table.attribute_code', array('in' => $oldCode));
+	foreach($attrCollection as $_attibute) {
+		if ($_attibute->getIsUserDefined()) {
+			try {
+                $_attibute->delete();
+            } catch (Exception $e) {
+                echo  $_attibute->getAttributeCode()." -- ".$e->getMessage() .'\n';
+                
+            }
+		}	
+	}
+	*/
+	
 	/*
     |--------------------------------------------------------------------------
     | Attribute Import
@@ -41,7 +95,7 @@
 	
 	$importer = new ArrtibuteImporter();
 	
-	//$importer->getAttributeCsv($fileName);
+	$importer->getAttributeCsv($fileName);
 	
 	unset($importer);
 	
@@ -59,74 +113,16 @@
 	
 	$importer = new ArrtibuteSetImporter();
 	
-	//$importer->getAttributeSetCsv($fileName);
+	$writeConnection->query("SET FOREIGN_KEY_CHECKS = 0");
+	
+	$importer->getAttributeSetCsv($fileName);
+	
+	$writeConnection->query("SET FOREIGN_KEY_CHECKS = 1");
 	
 	unset($importer);
 	
 	echo "\nMEMORY USED : ".convert(memory_get_usage(true)) . "\n\n";
 	
-	
-	/*
-    |--------------------------------------------------------------------------
-    | Attribute Set Import
-    |--------------------------------------------------------------------------
-    */
-    echo "Creating Products. \n";
-	
-	$importer = new ProductImporter();
-	
-	$importer->runImport();
-	
-	unset($importer);
-	
-	echo "\nMEMORY USED : ".convert(memory_get_usage(true)) . "\n\n";
-	
-	class ProductImporter {
-		
-		private $_storeIds = array();
-		
-		
-		private $_entityTypeId;
-		
-		public function __construct(){
-			
-			$allStores = Mage::app()->getStores();
-			foreach ($allStores as $_eachStoreId => $val) {
-				$this->_storeIds[] = Mage::app()->getStore($_eachStoreId)->getId();
-			}
-			$this->_entityTypeId = Mage::getModel('catalog/product')->getResource()->getTypeId();
-		}
-		
-		public function runImport(){
-				
-			$fileName = MAGENTO . '/var/product.csv';
-			
-		    echo "Reading $fileName.\n";
-		    $file = fopen($fileName,"r");
-		    while(!feof($file)){
-		        $csv[] = fgetcsv($file, 0, ',');
-		    }
-		    $keys = array_shift($csv);
-		    foreach ($csv as $i=>$row) {
-		        $csv[$i] = array_combine($keys, $row);
-		    }
-			
-			$currentSet = null;
-		  	foreach($csv as $row){
-		  		print_r($row);
-		    }
-			echo "MEMORY USED : ".convert(memory_get_usage(true)) . "\n";
-			
-			
-			fclose($file);
-			unset($csv,$keys,$file);
-			
-			echo "MEMORY USED : ".convert(memory_get_usage(true)) . "\n";
-		}
-
-
-		
-	}
 	
 	class ArrtibuteSetImporter {
 		
