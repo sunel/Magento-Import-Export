@@ -23,7 +23,7 @@ To Export run the script
 It will create three csv files "importAttriSet.csv" "importAttrib.csv" "product.csv" 
 
 
-To Import 
+To Import Arrtibute and Attribute set 
 
 
 ```shell
@@ -31,3 +31,7 @@ To Import
 	php import.php
 
 ```
+
+To Import Product user [magmi](http://wiki.magmi.org/)
+
+
