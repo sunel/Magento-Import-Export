@@ -32,6 +32,6 @@ To Import Arrtibute and Attribute set
 
 ```
 
-To Import Product user [magmi](http://wiki.magmi.org/)
+To Import Product use [magmi](http://wiki.magmi.org/)
 
 
