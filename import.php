@@ -8,7 +8,7 @@
 	
 	define('MAGENTO', realpath(dirname(__FILE__)).'/..');
 	require_once MAGENTO . '/app/Mage.php';
-	require_once MAGENTO . '/shell/exporte_product.php';
+	require_once MAGENTO . '/shell/export_product.php';
 	
 	// Increase maximum execution time to 4 hours
 	//ini_set('max_execution_time', 14400);
