@@ -663,12 +663,19 @@
 	                    $attrValue = $item->getData($attrCode);
 	
 	                    if (!empty($this->_attributeValues[$attrCode])) {
-	                        if (isset($this->_attributeValues[$attrCode][$attrValue])) {
-	                            $attrValue = $this->_attributeValues[$attrCode][$attrValue];
-	                        } else {
-	                            $attrValue = null;
-	                        }
-	                    }
+							if ($this->_attributeTypes[$attrCode] == 'multiselect') {
+								$attrValue = explode(',', $attrValue);
+								$attrValue = array_intersect_key(
+									$this->_attributeValues[$attrCode],
+									array_flip($attrValue)
+								);
+								$rowMultiselects[$itemId][$attrCode] = $attrValue;
+							} else if (isset($this->_attributeValues[$attrCode][$attrValue])) {
+								$attrValue = $this->_attributeValues[$attrCode][$attrValue];
+							} else {
+								$attrValue = null;
+							}
+						}
 	                    // do not save value same as default or not existent
 	                    if ($storeId != $defaultStoreId
 	                        && isset($dataRows[$itemId][$defaultStoreId][$attrCode])
@@ -1067,7 +1074,6 @@
 		public function runMain($exportProducts=array(),$name)
 		{
 			$n = new CustomImportExport_Export();
-			//$exportProducts = array_chunk($exportProducts, 2);
 			$n->setData(array(
 					"entity" => "catalog_product",
     				"file_format" => "csv",

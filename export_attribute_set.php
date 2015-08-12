@@ -6,14 +6,13 @@
 	
 	// Increase memory limit
 	ini_set('memory_limit', '2048M');
+	// Increase maximum execution time to 4 hours
+	//ini_set('max_execution_time', 14400);
 	
 	define('MAGENTO', realpath(dirname(__FILE__)).'/..');
 	require_once MAGENTO . '/app/Mage.php';
 	require_once MAGENTO . '/shell/export_product.php';
 	
-	// Increase maximum execution time to 4 hours
-	//ini_set('max_execution_time', 14400);
-
 	// Set working directory to magento root folder
 	chdir(MAGENTO);
 
@@ -87,17 +86,13 @@
 			$attibute_set[$i]['DEFAULT GROUP'] = join(';', $attrCodes);
 			$attibute_set[$i]['PRODUCT SKU'] = ' ';	
 		}
-		unset($productsSku);
-		unset($attrCodes);
-		unset($attrs);
-		unset($groupCollection);
+		unset($productsSku,$attrCodes,$attrs,$groupCollection);
 		$i++;
 	}
-
 	unset($collection);
 
 	echo "preparing csv.... \n";
-	prepareCsv($attibute_set,"importAttriSet.csv",',');
+	prepareCsv($attibute_set,"importAttributeSet.csv",',');
 	unset($attibute_set);
 	
 	
@@ -112,8 +107,7 @@
 		$connection = $resource->getConnection('core_read');
 		
 		// Increase maximium length for group_concat
-		$query = "SET SESSION group_concat_max_len = 1000000;";
-		$connection->query($query);
+		$connection->query("SET SESSION group_concat_max_len = 1000000;");
 		
 		$select_attribs = $connection
 							->select()
@@ -123,9 +117,7 @@
 							
 							$select_attribs->join(array('c_ea' => $resource->getTableName('catalog/eav_attribute')), 
 									'ea.attribute_id = c_ea.attribute_id');
-									 
-		// ->join(array('e_ao'=>$resource->getTableName('eav/attribute_option'), array('option_id')), 'c_ea.attribute_id = e_ao.attribute_id')
-		// ->join(array('e_aov'=>$resource->getTableName('eav/attribute_option_value'), array('value')), 'e_ao.option_id = e_aov.option_id and store_id = 0')
+									
 		if(!empty($exportAttributes)){
 			$select_attribs = $select_attribs->where('ea.attribute_code in ( '.implode(',', $exportAttributes) .' )');
 		}
@@ -152,11 +144,10 @@
 	
 		$attributesCollection = mergeCollections($product_attributes, $product_attribute_options);
 		
-		unset($product_attributes);
-		unset($product_attribute_options);
+		unset($product_attributes,$product_attribute_options);
 		
 		echo "preparing csv.... \n";
-		prepareCsv($attributesCollection,'importAttrib.csv',',');
+		prepareCsv($attributesCollection,'importAttribute.csv',',');
 		unset($attributesCollection);
 	
 	}

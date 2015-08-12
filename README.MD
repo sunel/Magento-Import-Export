@@ -20,7 +20,7 @@ To Export run the script
 
 ```
 
-It will create three csv files "importAttriSet.csv" "importAttrib.csv" "product.csv" 
+It will create three csv files "importAttributeSet.csv" "importAttribute.csv" "product.csv" 
 
 
 To Import Arrtibute and Attribute set 
@@ -32,6 +32,19 @@ To Import Arrtibute and Attribute set
 
 ```
 
+
 To Import Product use [magmi](http://wiki.magmi.org/)
 
+
+To increase the import performace and also to fully support magmi run
+
+
+```shell
+	
+	php split_products.php
+
+```
+
+
+This will split the product csv into smaller chunks of csv (count of 500 per file) and then modifies the files to support magmi
 

@@ -5,13 +5,11 @@
 	
 	// Increase memory limit
 	ini_set('memory_limit', '2048M');
+	// Increase maximum execution time to 4 hours
+	//ini_set('max_execution_time', 14400);
 	
 	define('MAGENTO', realpath(dirname(__FILE__)).'/..');
 	require_once MAGENTO . '/app/Mage.php';
-	require_once MAGENTO . '/shell/export_product.php';
-	
-	// Increase maximum execution time to 4 hours
-	//ini_set('max_execution_time', 14400);
 
 	// Set working directory to magento root folder
 	chdir(MAGENTO);
@@ -54,10 +52,13 @@
     |--------------------------------------------------------------------------
     | Attribute Delete
     |--------------------------------------------------------------------------
+	| To delete attributes just create a csv file with name oldAttributes and
+	| uncomment the below section and run it.
+	|		
     */
     
 	/*
-	$fileName = MAGENTO . '/var/oldAttrib.csv';
+	$fileName = MAGENTO . '/var/oldAttributes.csv';
 	$file = fopen($fileName,"r");
 	$oldCode = array();
     while(!feof($file)){
@@ -91,7 +92,7 @@
     
     echo "Creating Attribute. \n";
 	
-	$fileName = MAGENTO . '/var/importAttrib.csv';
+	$fileName = MAGENTO . '/var/importAttribute.csv';
 	
 	$importer = new ArrtibuteImporter();
 	
@@ -106,10 +107,10 @@
     | Attribute Set Import
     |--------------------------------------------------------------------------
     */
-    echo "Creating Attribute. \n";
+    echo "Creating Attribute Sets. \n";
 	
 	
-	$fileName = MAGENTO . '/var/importAttriSet.csv';
+	$fileName = MAGENTO . '/var/importAttributeSet.csv';
 	
 	$importer = new ArrtibuteSetImporter();
 	
