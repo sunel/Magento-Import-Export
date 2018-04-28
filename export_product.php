@@ -71,12 +71,12 @@
             return $collection;
         }
 
-         /**
-         * Prepare products bundel options
-         *
-         * @param  array $productIds
-         * @return array
-         */
+        /**
+        * Prepare products bundel options
+        *
+        * @param  array $productIds
+        * @return array
+        */
         protected function _prepareBundelOptions($collection)
         {
             if (!$collection->count()) {
@@ -88,7 +88,8 @@
                 if ($_product->getTypeID() == 'bundle') {
                     $bundledProduct = $_product;
                     $selectionCollection = $bundledProduct->getTypeInstance()->getSelectionsCollection(
-                        $bundledProduct->getTypeInstance()->getOptionsIds($bundledProduct), $bundledProduct
+                        $bundledProduct->getTypeInstance()->getOptionsIds($bundledProduct),
+                        $bundledProduct
                     );
                     $bundled_items = array();
                     $optionCollection = $bundledProduct->getTypeInstance()->getOptionsCollection($bundledProduct);
@@ -158,8 +159,10 @@
             switch ($lastMemoryLimitLetter) {
                 case 'g':
                     $memoryLimit *= 1024;
+                    // no break
                 case 'm':
                     $memoryLimit *= 1024;
+                    // no break
                 case 'k':
                     $memoryLimit *= 1024;
                     break;
@@ -211,51 +214,51 @@
                       if ($defaultStoreId == $storeId) {
                           $collection->addCategoryIds()->addWebsiteNamesToResult();
     
-                        // tier and group price data getting only once
-                        $rowTierPrices = $this->_prepareTierPrices($collection->getAllIds());
+                          // tier and group price data getting only once
+                          $rowTierPrices = $this->_prepareTierPrices($collection->getAllIds());
                           $rowGroupPrices = $this->_prepareGroupPrices($collection->getAllIds());
     
-                        // getting media gallery data
-                        $mediaGalery = $this->_prepareMediaGallery($collection->getAllIds());
+                          // getting media gallery data
+                          $mediaGalery = $this->_prepareMediaGallery($collection->getAllIds());
                         
-                        //get bundel product
-                        $rowBundelOptions = $this->_prepareBundelOptions($collection);
+                          //get bundel product
+                          $rowBundelOptions = $this->_prepareBundelOptions($collection);
                       }
                       foreach ($collection as $itemId => $item) { // go through all products
-                        echo "\r\033 ".$itemId;
+                          echo "\r\033 ".$itemId;
                           $rowIsEmpty = true; // row is empty by default
 
-                        foreach ($validAttrCodes as &$attrCode) { // go through all valid attribute codes
-                            $attrValue = $item->getData($attrCode);
+                          foreach ($validAttrCodes as &$attrCode) { // go through all valid attribute codes
+                              $attrValue = $item->getData($attrCode);
     
-                            if (!empty($this->_attributeValues[$attrCode])) {
-                                if ($this->_attributeTypes[$attrCode] == 'multiselect') {
-                                    $attrValue = explode(',', $attrValue);
-                                    $attrValue = array_intersect_key(
+                              if (!empty($this->_attributeValues[$attrCode])) {
+                                  if ($this->_attributeTypes[$attrCode] == 'multiselect') {
+                                      $attrValue = explode(',', $attrValue);
+                                      $attrValue = array_intersect_key(
                                         $this->_attributeValues[$attrCode],
                                         array_flip($attrValue)
                                     );
-                                    $rowMultiselects[$itemId][$attrCode] = $attrValue;
-                                } elseif (isset($this->_attributeValues[$attrCode][$attrValue])) {
-                                    $attrValue = $this->_attributeValues[$attrCode][$attrValue];
-                                } else {
-                                    $attrValue = null;
-                                }
-                            }
-                            // do not save value same as default or not existent
-                            if ($storeId != $defaultStoreId
+                                      $rowMultiselects[$itemId][$attrCode] = $attrValue;
+                                  } elseif (isset($this->_attributeValues[$attrCode][$attrValue])) {
+                                      $attrValue = $this->_attributeValues[$attrCode][$attrValue];
+                                  } else {
+                                      $attrValue = null;
+                                  }
+                              }
+                              // do not save value same as default or not existent
+                              if ($storeId != $defaultStoreId
                                 && isset($dataRows[$itemId][$defaultStoreId][$attrCode])
                                 && $dataRows[$itemId][$defaultStoreId][$attrCode] == $attrValue
                             ) {
-                                $attrValue = null;
-                            }
-                            if (is_scalar($attrValue)) {
-                                $dataRows[$itemId][$storeId][$attrCode] = $attrValue;
-                                $rowIsEmpty = false; // mark row as not empty
-                            }
-                        }
+                                  $attrValue = null;
+                              }
+                              if (is_scalar($attrValue)) {
+                                  $dataRows[$itemId][$storeId][$attrCode] = $attrValue;
+                                  $rowIsEmpty = false; // mark row as not empty
+                              }
+                          }
                           if ($rowIsEmpty) { // remove empty rows
-                            unset($dataRows[$itemId][$storeId]);
+                              unset($dataRows[$itemId][$storeId]);
                           } else {
                               $attrSetId = $item->getAttributeSetId();
                               $dataRows[$itemId][$storeId][self::COL_STORE]    = $storeCode;
@@ -1053,7 +1056,7 @@
             
             return $_getEntityAdapter
                     ->setWriter(Mage::getModel('importexport/export_adapter_csv', $destination))
-                    ->export110();
+                    ->export();
         }
     }
     
@@ -1066,7 +1069,7 @@
             $this->_profile = Mage::getModel('dataflow/profile');
         }
         
-        public function runMain($exportProducts=array(), $name)
+        public function export($exportProducts, $filename)
         {
             $n = new CustomImportExport_Export();
             $n->setData(array(
@@ -1078,8 +1081,6 @@
                     )
                 ));
                 
-            $n->export(MAGENTO.'/var/product-'.$name.'.csv');
-            echo "\n";
-            echo MAGENTO."/var/product-$name.csv \n\n";
+            $n->export($filename);
         }
     }
