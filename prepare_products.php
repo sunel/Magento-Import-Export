@@ -1,5 +1,5 @@
 <?php
-require_once './bootstrap.php';
+require_once 'bootstrap.php';
 
 $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
 
@@ -23,12 +23,12 @@ $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_writ
 
 echo "Creating Products files. \n";
 
-if (!is_dir(MAGENTO.'/var/split/old')) {
-    mkdir(MAGENTO.'/var/split/old', 0777, true);
+if (!is_dir(MAGENTO.'/var/split/unformated')) {
+    mkdir(MAGENTO.'/var/split/unformated', 0777, true);
 }
 
-if (!is_dir(MAGENTO.'/var/split/new')) {
-    mkdir(MAGENTO.'/var/split/new', 0777, true);
+if (!is_dir(MAGENTO.'/var/split/formated')) {
+    mkdir(MAGENTO.'/var/split/formated', 0777, true);
 }
     
 /*
@@ -53,7 +53,7 @@ while (($data = fgetcsv($handle)) !== false) {
             $prefix++;
             $count = 0;
             if ($prefix != 1) {
-                $filename = MAGENTO.'/var/split/old/product-' . $prefix . '.csv';
+                $filename = MAGENTO.'/var/split/unformated/product-' . $prefix . '.csv';
                 $write = fopen($filename, 'a');
                 fputcsv($write, $headers);
                 fclose($write);
@@ -61,12 +61,12 @@ while (($data = fgetcsv($handle)) !== false) {
             echo "Count prefix [" . $prefix . "]\n";
         }
 
-        $filename = MAGENTO.'/var/split/old/product-'. $prefix . '.csv';
+        $filename = MAGENTO.'/var/split/unformated/product-'. $prefix . '.csv';
         $write = fopen($filename, 'a');
         fputcsv($write, $data);
         fclose($write);
     } else {
-        $filename = MAGENTO.'/var/split/old/product-' . $prefix . '.csv';
+        $filename = MAGENTO.'/var/split/unformated/product-' . $prefix . '.csv';
         $write = fopen($filename, 'a');
         fputcsv($write, $data);
         fclose($write);
@@ -125,7 +125,7 @@ class PrepareProductImporter
     
     public function run($name)
     {
-        $fileName = MAGENTO . '/var/split/old/'.$name;
+        $fileName = MAGENTO . '/var/split/unformated/'.$name;
         
         echo "Reading $fileName.\n";
         $file = fopen($fileName, "r");
@@ -180,7 +180,7 @@ class PrepareProductImporter
         }
         unset($this->_groups);
         
-        writeCsv($finalArray, MAGENTO . '/var/split/new/'.$name, ',');
+        writeCsv($finalArray, MAGENTO . '/var/split/formated/'.$name, ',');
         
         echo "MEMORY USED : ".convert(memory_get_usage(true)) . "\n";
     }

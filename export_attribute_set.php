@@ -28,7 +28,6 @@ class ArrtibuteSetExporter
         $attibute_set = array();
         $i = 0;
         
-        echo "Collecting all attribute set..... \n";
         foreach ($collection as $attributeSet) {
             $defaultGroupId = $attributeSet->getDefaultGroupId();
             $defaultGroup = Mage::getModel('eav/entity_attribute_group')->load($attributeSet->getDefaultGroupId());

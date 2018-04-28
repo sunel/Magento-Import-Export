@@ -209,7 +209,7 @@
                       if ($collection->count() == 0) {
                           break;
                       }
-                      echo "\nFound : ".$collection->count()." in $storeId \n";
+                      echo "\nFound : ".$collection->count()." products in [$storeId] - store \n";
                     
                       if ($defaultStoreId == $storeId) {
                           $collection->addCategoryIds()->addWebsiteNamesToResult();
@@ -654,7 +654,7 @@
                     
                     $rowBundelOptions = $this->_prepareBundelOptions($collection);
                 }
-                echo "\nFound : ".$collection->count()." in $storeId \n";
+                echo "\nFound : ".$collection->count()." products in [$storeId] - store \n";
                 foreach ($collection as $itemId => $item) { // go through all products
                     $rowIsEmpty = true; // row is empty by default
                     echo "\r\033 ".$itemId;

@@ -1,8 +1,8 @@
 <?php
 
-require_once './bootstrap.php';
-require_once './import_arrtibute.php';
-require_once './import_arrtibute_set.php';
+require_once 'bootstrap.php';
+require_once 'import_arrtibute.php';
+require_once 'import_arrtibute_set.php';
 
 
 if (!Arguments::hasArgs()) {

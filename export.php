@@ -1,9 +1,9 @@
 <?php
 
-require_once './bootstrap.php';
-require_once './export_product.php';
-require_once './export_attribute.php';
-require_once './export_attribute_set.php';
+require_once 'bootstrap.php';
+require_once 'export_product.php';
+require_once 'export_attribute.php';
+require_once 'export_attribute_set.php';
 
 $attributeSetNames = array(
     'Default'
@@ -71,7 +71,7 @@ if (Arguments::getArg('products')) {
     // Execute the product export
     $exporter = new ProductExporter();
 
-    $exporter->export(array_unique($result[1]));
+    $exporter->export(array_unique($result[1]), $fileName);
 
     echo "\n";
     echo "$fileName \n\n";
