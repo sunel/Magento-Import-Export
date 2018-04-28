@@ -19,10 +19,10 @@ class ArrtibuteImporter
         $this->_entityTypeId = Mage::getModel('eav/entity')->setType('catalog_product')->getTypeId();
     }
     
-    public function getAttributeCsv($fileName)
+    public function import($fileName)
     {
         // $csv = array_map("str_getcsv", file($fileName,FILE_SKIP_EMPTY_LINES));
-        echo "Reading $fileName.\n";
+        echo "\nReading $fileName.\n\n";
         $file = fopen($fileName, "r");
         while (!feof($file)) {
             $csv[] = fgetcsv($file, 0, ',');
@@ -47,7 +47,7 @@ class ArrtibuteImporter
             }
             unset($row['category_ids'], $row['frontend_label'], $row['attribute_code'], $row['_options'], $row['apply_to'], $row['attribute_id'], $row['entity_type_id'], $row['search_weight']);
             $this->createAttribute($labelText, $attributeCode, $row, $productTypes, -1, $options);
-            echo "MEMORY USED : ".convert(memory_get_usage(true)) . "\n";
+            echo "\nMEMORY USED : ".convert(memory_get_usage(true)) . "\n\n";
         }
         fclose($file);
         unset($csv, $keys, $file);
@@ -67,7 +67,8 @@ class ArrtibuteImporter
         $attributeCode = trim($attributeCode);
     
         if ($labelText == '' || $attributeCode == '') {
-            echo "Can't import the attribute with an empty label or code.  LABEL= [$labelText]  CODE= [$attributeCode]"." \n";
+            echo "  Can't import the attribute with an empty label or code.  LABEL= [$labelText]  CODE= [$attributeCode]"." \n";
+            echo "  Or might be due to empty line\n";
             return false;
         }
     
@@ -80,11 +81,11 @@ class ArrtibuteImporter
         }
     
         if ($setInfo !== -1 && (isset($setInfo['SetID']) == false || isset($setInfo['GroupID']) == false)) {
-            echo "Please provide both the set-ID and the group-ID of the attribute-set if you'd like to subscribe to one."." \n";
+            echo "  Please provide both the set-ID and the group-ID of the attribute-set if you'd like to subscribe to one."." \n";
             return false;
         }
     
-        echo "Creating attribute [$labelText] with code [$attributeCode]."." \n";
+        echo " Creating attribute [$labelText] with code [$attributeCode]."." \n";
     
         //>>>> Build the data structure that will define the attribute. See
         //     Mage_Adminhtml_Catalog_Product_AttributeController::saveAction().
@@ -153,7 +154,7 @@ class ArrtibuteImporter
         // Now, overlay the incoming values on to the defaults.
         foreach ($values as $key => $newValue) {
             if (isset($data[$key]) == false) {
-                echo "Attribute feature [$key] is not valid."." \n";
+                echo "   Attribute feature [$key] is not valid."." \n";
             //return false;
             } else {
                 $data[$key] = $newValue;
@@ -181,12 +182,12 @@ class ArrtibuteImporter
         try {
             $model->save();
         } catch (Exception $ex) {
-            echo "Attribute [$labelText] could not be saved: " . $ex->getMessage()." \n";
+            echo "   Attribute [$labelText] could not be saved: " . $ex->getMessage()." \n";
             return false;
         }
         
         if (is_array($options)) {
-            echo "Adding (".count($options).") attribute value for [$attributeCode]."." \n";
+            echo "  Adding (".count($options).") attribute value for [$attributeCode]."." \n";
             foreach ($options as $_opt) {
                 $this->addAttributeValue($attributeCode, $_opt);
                 echo "*";
@@ -196,7 +197,7 @@ class ArrtibuteImporter
     
         $id = $model->getId();
     
-        echo "Attribute [$labelText] has been saved as ID ($id). \n";
+        echo "  Attribute [$labelText] has been saved as ID ($id). \n";
     
         // return $id;
     }
