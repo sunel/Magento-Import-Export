@@ -191,7 +191,7 @@
                     echo "  Adding Attribute to Group [".$_group['name']."].\n";
                     foreach ($_group['attributes'] as $_attribute) {
                         $attribute = explode('/', $_attribute);
-                        echo "   ->Adding []".$attribute[0]."]\n";
+                        echo "   ->Adding [".$attribute[0]."]\n";
                         $this->_attributeSetModel->addAttributeToSet($this->_entityTypeId, $setId, $_group['name'], $attribute[0]);
                     }
                 }
