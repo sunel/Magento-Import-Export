@@ -6,7 +6,7 @@
 
 Please go through each script files and modify the code according to you needs. The code is written based on assumptions.
 
-Read through the file, you file comments that will help you understand the code.
+Read through the file, you will find comments that will help you understand the code.
 
 Improvements are welcomed.
 
