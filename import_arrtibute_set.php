@@ -61,13 +61,17 @@ class ArrtibuteSetImporter
     {
         foreach ($sets as $setId => $setInfo) {
             echo "Adding Group to Attribute Set [$setId].\n";
-            foreach ($setInfo['groups'] as $_group) {
-                $this->_attributeSetModel->addAttributeGroup($this->_entityTypeId, $setId, $_group['name']);
-                echo "  Adding Attribute to Group [".$_group['name']."].\n";
-                foreach ($_group['attributes'] as $_attribute) {
-                    $attribute = explode('/', $_attribute);
-                    echo "   ->Adding [".$attribute[0]."]\n";
-                    $this->_attributeSetModel->addAttributeToSet($this->_entityTypeId, $setId, $_group['name'], $attribute[0]);
+            foreach ($setInfo['groups'] as $_group) {                
+                if(!empty($_group['name'])) {
+                    $this->_attributeSetModel->addAttributeGroup($this->_entityTypeId, $setId, $_group['name']);
+                    echo "  Adding Attribute to Group [".$_group['name']."].\n";
+                    foreach ($_group['attributes'] as $_attribute) {
+                        $attribute = explode('/', $_attribute);
+                        if(!empty($attribute[0])) {
+                            echo "   ->Adding [".$attribute[0]."]\n";
+                            $this->_attributeSetModel->addAttributeToSet($this->_entityTypeId, $setId, $_group['name'], $attribute[0]);
+                        }
+                    }
                 }
             }
         }
